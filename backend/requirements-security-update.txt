@@ -3,7 +3,7 @@
 
 # Core Django - Security Patched
 Django==4.2.24  # Fixes CVE issues with SQL injection, DoS, and log injection
-djangorestframework==3.15.2  # Fixes XSS vulnerability in break_long_headers
+djangorestframework==3.16.1  # Fixes XSS vulnerability in break_long_headers
 django-cors-headers==4.9.0
 django-filter==25.1
 
@@ -12,14 +12,14 @@ psycopg2-binary==2.9.10  # Latest stable
 
 # Authentication - Security Patched
 djangorestframework-simplejwt==5.5.1  # Fixes authentication bypass vulnerability
-django-allauth==65.3.0  # Latest stable
+django-allauth==65.11.2  # Latest stable
 
 # Environment variables
 python-decouple==3.8
 
 # Redis cache
 redis==5.2.1  # Latest stable
-django-redis==5.4.0
+django-redis==6.0.0
 
 # API documentation
 drf-spectacular==0.28.0  # Latest stable
