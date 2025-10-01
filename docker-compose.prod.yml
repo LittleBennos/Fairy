@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env.production
+    restart: always
+    networks:
+      - backend-network
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    networks:
+      - backend-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    env_file:
+      - .env.production
+    depends_on:
+      - db
+      - redis
+    restart: always
+    networks:
+      - backend-network
+      - frontend-network
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=${FRONTEND_API_URL}
+    volumes:
+      - frontend_build:/app/dist
+    networks:
+      - frontend-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - static_volume:/static
+      - media_volume:/media
+      - frontend_build:/usr/share/nginx/html
+    depends_on:
+      - backend
+      - frontend
+    restart: always
+    networks:
+      - frontend-network
+      - backend-network
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  frontend_build:
+
+networks:
+  backend-network:
+    driver: bridge
+  frontend-network:
+    driver: bridge

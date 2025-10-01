@@ -1,0 +1,14 @@
+# Production requirements
+-r requirements-base.txt
+
+# Production monitoring
+sentry-sdk==1.39.1
+
+# Production database
+psycopg2==2.9.9  # Non-binary version for production
+
+# Security
+python-dotenv==1.0.0
+
+# Performance
+whitenoise==6.6.0  # Static file serving

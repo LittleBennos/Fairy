@@ -1,0 +1,82 @@
+version: 2
+updates:
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "LittleBennos"
+    labels:
+      - "dependencies"
+      - "python"
+    groups:
+      django:
+        patterns:
+          - "django*"
+      testing:
+        patterns:
+          - "pytest*"
+          - "coverage"
+
+  # JavaScript dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "LittleBennos"
+    labels:
+      - "dependencies"
+      - "javascript"
+    groups:
+      react:
+        patterns:
+          - "react*"
+          - "@tanstack/*"
+      dev-dependencies:
+        dependency-type: "development"
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    reviewers:
+      - "LittleBennos"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  - package-ecosystem: "docker"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    reviewers:
+      - "LittleBennos"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "04:00"
+    reviewers:
+      - "LittleBennos"
+    labels:
+      - "dependencies"
+      - "github-actions"

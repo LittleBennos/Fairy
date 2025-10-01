@@ -1,0 +1,39 @@
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Set work directory
+WORKDIR /app
+
+# Install Python dependencies for production
+COPY requirements-*.txt /app/
+RUN pip install --upgrade pip && \
+    pip install -r requirements-prod.txt
+
+# Copy project and change ownership
+COPY --chown=appuser:appuser . /app/
+
+# Create directories for static and media files
+RUN mkdir -p /app/staticfiles /app/media && \
+    chown -R appuser:appuser /app/staticfiles /app/media
+
+# Switch to non-root user
+USER appuser
+
+# Create entrypoint script
+RUN echo '#!/bin/sh\npython manage.py collectstatic --noinput\nexec "$@"' > /app/entrypoint.sh && \
+    chmod +x /app/entrypoint.sh
+
+# Use entrypoint to run collectstatic before starting gunicorn
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--threads", "2"]
