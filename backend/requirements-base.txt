@@ -29,7 +29,7 @@ django-ratelimit==4.1.0
 bleach==6.1.0
 
 # Utilities
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
 pytz==2024.1
 
 # Production server
