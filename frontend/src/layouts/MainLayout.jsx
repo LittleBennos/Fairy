@@ -1,9 +1,17 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function MainLayout() {
   const location = useLocation()
+  const navigate = useNavigate()
+  const { user, logout } = useAuth()
 
   const isActive = (path) => location.pathname === path
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/login')
+  }
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -11,6 +19,7 @@ export default function MainLayout() {
       <nav className="w-64 bg-white shadow-lg">
         <div className="p-6 border-b">
           <h1 className="text-2xl font-bold text-purple-600">Fairy Studio</h1>
+          <p className="text-sm text-gray-600 mt-1">Admin Dashboard</p>
         </div>
         <ul className="py-4">
           <li>
@@ -98,6 +107,22 @@ export default function MainLayout() {
             </Link>
           </li>
         </ul>
+
+        {/* User info and logout */}
+        <div className="absolute bottom-0 w-64 p-6 border-t bg-gray-50">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-900">{user?.username}</p>
+              <p className="text-xs text-gray-600">{user?.role || 'Admin'}</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="text-sm text-red-600 hover:text-red-700 font-medium"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
       </nav>
 
       {/* Main Content */}
