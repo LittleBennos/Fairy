@@ -32,7 +32,10 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 'yes', 'on')
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# Host configuration - Industry standard approach
+# In production, explicitly set these via environment variables
+# In development, we allow more flexibility
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',') if os.environ.get('ALLOWED_HOSTS') else ['*']
 
 
 # Application definition
@@ -188,12 +191,26 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
 }
 
-# CORS Settings
-CORS_ALLOWED_ORIGINS = os.environ.get(
-    'CORS_ALLOWED_ORIGINS',
-    'http://localhost:5173,http://127.0.0.1:5173'
-).split(',')
+# CORS Settings - Industry standard approach
+# In development, allow all origins for flexibility
+# In production, explicitly list allowed origins via environment variable
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = list(filter(None, os.environ.get(
+        'CORS_ALLOWED_ORIGINS',
+        'http://localhost:5173,http://127.0.0.1:5173'
+    ).split(',')))
+
 CORS_ALLOW_CREDENTIALS = True
+
+# CSRF Settings - Following Django 4.x requirements
+# Format: 'http://domain:port' or 'https://domain:port'
+# Industry standard: Use environment variable, comma-separated list
+CSRF_TRUSTED_ORIGINS = list(filter(None, os.environ.get(
+    'CSRF_TRUSTED_ORIGINS',
+    'http://localhost:5173,http://127.0.0.1:5173,http://localhost:8000,http://127.0.0.1:8000'
+).split(',')))
 
 # Simple JWT Settings
 from datetime import timedelta
