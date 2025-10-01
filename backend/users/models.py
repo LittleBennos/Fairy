@@ -13,6 +13,8 @@ class User(AbstractUser):
         ('staff', 'Staff Member'),
         ('teacher', 'Teacher'),
         ('parent', 'Parent/Guardian'),
+        ('guardian', 'Guardian'),
+        ('student', 'Student'),
     ]
 
     # Additional fields
