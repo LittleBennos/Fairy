@@ -29,7 +29,8 @@ export function AuthProvider({ children }) {
   const checkAuth = async () => {
     try {
       const response = await apiClient.get('/auth/me/')
-      setUser(response.data)
+      const userData = response.data.user || response.data
+      setUser(userData)
       setIsAuthenticated(true)
     } catch (error) {
       setUser(null)
@@ -51,8 +52,6 @@ export function AuthProvider({ children }) {
       })
 
       const userData = response.data.user || response.data
-      console.log('Login response:', response.data)
-      console.log('User data:', userData)
       setUser(userData)
       setIsAuthenticated(true)
 
