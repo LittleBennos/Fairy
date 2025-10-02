@@ -17,15 +17,21 @@ export default function Login() {
 
     try {
       const result = await login(username, password)
+      console.log('Login result:', result)
+      console.log('User role:', result.user?.role)
 
       // Redirect based on user role
       if (result.user.role === 'admin' || result.user.role === 'staff') {
+        console.log('Redirecting to dashboard')
         navigate('/dashboard')
       } else if (result.user.role === 'student') {
+        console.log('Redirecting to student portal')
         navigate('/student-portal')
       } else if (result.user.role === 'guardian' || result.user.role === 'parent') {
+        console.log('Redirecting to parent portal')
         navigate('/parent-portal')
       } else {
+        console.log('Redirecting to dashboard (default)')
         navigate('/dashboard')
       }
     } catch (err) {
