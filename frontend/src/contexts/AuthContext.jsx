@@ -50,7 +50,9 @@ export function AuthProvider({ children }) {
         password
       })
 
-      const userData = response.data
+      const userData = response.data.user || response.data
+      console.log('Login response:', response.data)
+      console.log('User data:', userData)
       setUser(userData)
       setIsAuthenticated(true)
 
