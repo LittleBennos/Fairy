@@ -17,8 +17,13 @@ export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   // Check if user is already authenticated on mount
+  // Skip on login page to avoid unnecessary API calls
   useEffect(() => {
-    checkAuth()
+    if (!window.location.pathname.includes('/login')) {
+      checkAuth()
+    } else {
+      setLoading(false)
+    }
   }, [])
 
   const checkAuth = async () => {
