@@ -81,12 +81,16 @@ apiClient.interceptors.response.use(
 
       // Try to refresh the token
       try {
-        await apiClient.post('/auth/cookie/refresh/');
+        await apiClient.post('/auth/refresh/');
         // Retry original request
         return apiClient(originalRequest);
       } catch (refreshError) {
-        // Refresh failed, redirect to login
-        window.location.href = '/login';
+        // Refresh failed, redirect to login only if not already on login page
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+        // Re-throw the error so the calling code can handle it
+        return Promise.reject(refreshError);
       }
     }
 
