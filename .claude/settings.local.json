@@ -13,7 +13,10 @@
       "Read(//c/Users/ben/.ssh/**)",
       "Bash(ssh root@72.60.208.226 \"cd ~/fairy && echo ''SECURE_SSL_REDIRECT=False'' >> .env && docker compose restart backend\")",
       "Bash(ssh root@72.60.208.226 \"cd ~/fairy && docker compose exec backend python -c \"\"from django.conf import settings; print(''DEBUG:'', settings.DEBUG); print(''SECURE_SSL_REDIRECT:'', settings.SECURE_SSL_REDIRECT)\"\"\")",
-      "Bash(ssh root@72.60.208.226 \"cd ~/fairy && docker compose exec backend sh -c ''export DJANGO_SETTINGS_MODULE=config.settings && python manage.py shell -c \"\"from django.conf import settings; print(settings.DEBUG, settings.SECURE_SSL_REDIRECT)\"\"''\")"
+      "Bash(ssh root@72.60.208.226 \"cd ~/fairy && docker compose exec backend sh -c ''export DJANGO_SETTINGS_MODULE=config.settings && python manage.py shell -c \"\"from django.conf import settings; print(settings.DEBUG, settings.SECURE_SSL_REDIRECT)\"\"''\")",
+      "Bash(ssh root@72.60.208.226 \"cd ~/fairy && cp .env.production .env && echo ''Updated .env file:'' && head -10 .env\")",
+      "Bash(ssh root@72.60.208.226 \"cd ~/fairy && cp .env.backup.20251004_072953 .env && echo ''Restored original .env file'' && head -5 .env\")",
+      "Bash(docker compose:*)"
     ],
     "deny": [],
     "ask": []

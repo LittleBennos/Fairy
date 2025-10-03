@@ -27,6 +27,11 @@ pytz==2024.1
 
 # Security
 bleach==6.1.0
+django-axes==6.1.1  # Brute force protection
+django-ratelimit==4.1.0  # Additional rate limiting
+cryptography==41.0.7  # For encryption of sensitive data
+django-defender==0.9.7  # Login attempt monitoring
+django-csp==3.7  # Content Security Policy
 
 # Development
 django-debug-toolbar==6.0.0

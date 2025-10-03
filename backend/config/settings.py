@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'drf_spectacular',
+    'axes',  # Brute force protection - must be after contrib.auth
+    'django_ratelimit',  # Additional rate limiting
+    'csp',  # Content Security Policy
     # Local apps
     'users',
     'people',
@@ -70,6 +73,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',  # Brute force protection
+    'csp.middleware.CSPMiddleware',  # Content Security Policy
+    # Custom security middleware
+    'config.security.SecurityHeadersMiddleware',
+    'config.security.RateLimitMiddleware',
+    'config.security.InputValidationMiddleware',
+    'config.security.AuditLoggingMiddleware',
+    'config.security.SessionSecurityMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -138,6 +149,17 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Cache Configuration (required for rate limiting and axes)
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': os.environ.get('REDIS_URL', 'redis://redis:6379/0'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -161,6 +183,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
+        'utils.permissions.StrictAPIAccess',  # Use our strict role-based permissions
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_FILTER_BACKENDS': [
@@ -269,3 +292,12 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     USE_X_FORWARDED_HOST = True
     USE_X_FORWARDED_PORT = True
+
+# Import Django-Axes configuration for brute force protection
+from .axes_config import *
+
+# Authentication backends - removed AxesStandaloneBackend due to compatibility
+# Using middleware-based approach instead
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
