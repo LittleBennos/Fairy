@@ -6,6 +6,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
+from utils.permissions import IsAdminUser, StrictAPIAccess, PublicEndpoint
 from .serializers import (
     UserSerializer,
     UserListSerializer,
